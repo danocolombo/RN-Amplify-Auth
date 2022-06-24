@@ -8,23 +8,38 @@ const CustomButton = ({
     bgColor,
     fgColor,
 }) => {
+    let cStyle;
+    let tStyle;
+    switch (type) {
+        case 'PRIMARY':
+            cStyle = 'container_PRIMARY';
+            tStyle = 'text_PRIMARY';
+            break;
+        case 'SECONDARY':
+            cStyle = 'container_SECONDARY';
+            tStyle = 'text_SECONDARY';
+            break;
+        case 'TERTIARY':
+            cStyle = 'container_TERTIARY';
+            tStyle = 'text_TERTIARY';
+            break;
+
+        default:
+            break;
+    }
     return (
         <Pressable
             onPress={onPress}
             style={[
                 styles.container,
-                type === 'PRIMARY'
-                    ? styles['container_PRIMARY']
-                    : styles['container_TERTIARY'],
+                styles[cStyle],
                 bgColor ? { backgroundColor: bgColor } : {},
             ]}
         >
             <Text
                 style={[
                     styles.text,
-                    type === 'PRIMARY'
-                        ? styles['text_PRIMARY']
-                        : styles['text_TERTIARY'],
+                    styles[tStyle],
                     fgColor ? { color: fgColor } : {},
                 ]}
             >
@@ -47,6 +62,10 @@ const styles = StyleSheet.create({
     container_PRIMARY: {
         backgroundColor: '#3b71f3',
     },
+    container_SECONDARY: {
+        borderColor: '#3b71f3',
+        borderWidth: 2,
+    },
     container_TERTIARY: {},
     text: {
         color: 'white',
@@ -54,5 +73,8 @@ const styles = StyleSheet.create({
     },
     text_TERTIARY: {
         color: 'gray',
+    },
+    text_SECONDARY: {
+        color: '#3b71f3',
     },
 });

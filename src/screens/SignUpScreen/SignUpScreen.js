@@ -3,15 +3,17 @@ import React, { useState } from 'react';
 import CustomInput from '../../components/ui/CustomInput';
 import CustomButton from '../../components/ui/CustomButton/CustomButton';
 import SocialSignInButtons from '../../components/ui/SocialSignInButtons';
+import { useNavigation } from '@react-navigation/native';
 
 const SignUpScreen = () => {
     const [userName, setUserName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [passwordRepeat, setPasswordRepeat] = useState('');
-
+    const navigation = useNavigation();
     const onSignUpPressed = () => {
-        console.warn('Sign Up');
+        //todo REGISTER THE USER
+        navigation.navigate('ConfirmEmail');
     };
     const onTermsOfUsePressed = () => {
         console.warn('Terms of Use');
@@ -20,7 +22,7 @@ const SignUpScreen = () => {
         console.warn('Privacy Policy');
     };
     const onSignInPressed = () => {
-        console.warn('Sign in');
+        navigation.navigate('SignIn');
     };
 
     return (
@@ -78,7 +80,7 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         alignItems: 'center',
         marginTop: 80,
-        width: '100%',
+        marginHorizontal: 20,
     },
     title: {
         fontSize: 24,

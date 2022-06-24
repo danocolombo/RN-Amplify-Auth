@@ -11,19 +11,22 @@ import Logo from '../../../assets/images/P8-Logo150.png';
 import CustomInput from '../../components/ui/CustomInput';
 import CustomButton from '../../components/ui/CustomButton/CustomButton';
 import SocialSignInButtons from '../../components/ui/SocialSignInButtons';
+import { useNavigation } from '@react-navigation/native';
 
 const SignInScreen = () => {
     const [userName, setUserName] = useState('');
     const [password, setPassword] = useState('');
     const { height } = useWindowDimensions();
+    const navigation = useNavigation();
     const onSignInPressed = () => {
-        console.warn('Sign In');
+        //todo validate user
+        navigation.navigate('Home');
     };
     const onSignUpPressed = () => {
-        console.warn('Sign Up');
+        navigation.navigate('SignUp');
     };
     const forgotPasswordPressed = () => {
-        console.warn('forgotPasswordPressed');
+        navigation.navigate('ForgotPassword');
     };
     return (
         <ScrollView showsVerticalScrollIndicator={false}>
@@ -68,7 +71,8 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         alignItems: 'center',
         marginTop: 80,
-        width: '100%',
+        // width: '100%',
+        marginHorizontal: 20,
     },
     logo: {
         width: '70%',
