@@ -3,34 +3,46 @@ import React, { useState } from 'react';
 import CustomInput from '../../components/ui/CustomInput';
 import CustomButton from '../../components/ui/CustomButton/CustomButton';
 import { useNavigation } from '@react-navigation/native';
+import { useForm } from 'react-hook-form';
 const ForgotPasswordScreen = () => {
-    const [userName, setUserName] = useState('');
-    const [code, setCode] = useState('');
-    const [password, setPassword] = useState('');
-    const [passwordRepeat, setPasswordRepeat] = useState('');
+    const { control, handleSubmit } = useForm();
     const navigation = useNavigation();
-    const onBackToSignInPressed = () => {
-        navigation.navigate('SignIn');
-    };
-    const onSendPressed = () => {
+
+    const onSendPressed = async (data) => {
+        // try {
+        //     await Auth.forgotPassword(data.username);
         navigation.navigate('NewPassword');
+        // } catch (e) {
+        //     Alert.alert('Oops', e.message);
+        // }
+    };
+
+    const onSignInPress = () => {
+        navigation.navigate('SignIn');
     };
 
     return (
         <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.root}>
                 <Text style={styles.title}>Reset your password</Text>
+
                 <CustomInput
+                    name='username'
+                    control={control}
                     placeholder='Username'
-                    value={userName}
-                    setValue={setUserName}
+                    rules={{
+                        required: 'Username is required',
+                    }}
                 />
 
-                <CustomButton text='Send' onPress={onSendPressed} />
+                <CustomButton
+                    text='Send'
+                    onPress={handleSubmit(onSendPressed)}
+                />
 
                 <CustomButton
                     text='Back to Sign in'
-                    onPress={onBackToSignInPressed}
+                    onPress={onSignInPress}
                     type='TERTIARY'
                 />
             </View>
@@ -38,14 +50,10 @@ const ForgotPasswordScreen = () => {
     );
 };
 
-export default ForgotPasswordScreen;
 const styles = StyleSheet.create({
     root: {
-        // flex: 1,
-        flexDirection: 'column',
         alignItems: 'center',
-        marginTop: 80,
-        width: '100%',
+        padding: 20,
     },
     title: {
         fontSize: 24,
@@ -61,3 +69,5 @@ const styles = StyleSheet.create({
         color: '#FDB075',
     },
 });
+
+export default ForgotPasswordScreen;

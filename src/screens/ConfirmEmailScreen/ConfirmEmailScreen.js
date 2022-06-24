@@ -3,44 +3,77 @@ import React, { useState } from 'react';
 import CustomInput from '../../components/ui/CustomInput';
 import CustomButton from '../../components/ui/CustomButton/CustomButton';
 import { useNavigation } from '@react-navigation/native';
+import { useForm } from 'react-hook-form';
 
 const ConfirmEmailScreen = () => {
-    const [userName, setUserName] = useState('');
-    const [code, setCode] = useState('');
-    const [password, setPassword] = useState('');
-    const [passwordRepeat, setPasswordRepeat] = useState('');
+    //const route = useRoute();
+    const { control, handleSubmit, watch } = useForm({
+        defaultValues: { username: route?.params?.username },
+    });
+
+    const username = watch('username');
+
     const navigation = useNavigation();
-    const onConfirmPressed = () => {
-        //todo: validate
-        navigation.navigate('Home');
+
+    const onConfirmPressed = async (data) => {
+        // try {
+        //     await Auth.confirmSignUp(data.username, data.code);
+        navigation.navigate('SignIn');
+        // } catch (e) {
+        //     Alert.alert('Oops', e.message);
+        // }
     };
-    const onBackToSignInPressed = () => {
+
+    const onSignInPress = () => {
         navigation.navigate('SignIn');
     };
-    const onResendCodePressed = () => {
-        console.warn('Resend Code');
+
+    const onResendPress = async () => {
+        try {
+            await Auth.resendSignUp(username);
+            Alert.alert('Success', 'Code was resent to your email');
+        } catch (e) {
+            Alert.alert('Oops', e.message);
+        }
     };
 
     return (
         <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.root}>
                 <Text style={styles.title}>Confirm your email</Text>
+
                 <CustomInput
-                    placeholder='Enter your confirmation code'
-                    value={code}
-                    setValue={setCode}
+                    name='username'
+                    control={control}
+                    placeholder='Username'
+                    rules={{
+                        required: 'Username code is required',
+                    }}
                 />
 
-                <CustomButton text='Confirm' onPress={onConfirmPressed} />
+                <CustomInput
+                    name='code'
+                    control={control}
+                    placeholder='Enter your confirmation code'
+                    rules={{
+                        required: 'Confirmation code is required',
+                    }}
+                />
+
+                <CustomButton
+                    text='Confirm'
+                    onPress={handleSubmit(onConfirmPressed)}
+                />
 
                 <CustomButton
                     text='Resend code'
-                    onPress={onResendCodePressed}
+                    onPress={onResendPress}
                     type='SECONDARY'
                 />
+
                 <CustomButton
                     text='Back to Sign in'
-                    onPress={onBackToSignInPressed}
+                    onPress={onSignInPress}
                     type='TERTIARY'
                 />
             </View>
@@ -48,14 +81,10 @@ const ConfirmEmailScreen = () => {
     );
 };
 
-export default ConfirmEmailScreen;
 const styles = StyleSheet.create({
     root: {
-        // flex: 1,
-        flexDirection: 'column',
         alignItems: 'center',
-        marginTop: 80,
-        width: '100%',
+        padding: 20,
     },
     title: {
         fontSize: 24,
@@ -71,3 +100,5 @@ const styles = StyleSheet.create({
         color: '#FDB075',
     },
 });
+
+export default ConfirmEmailScreen;

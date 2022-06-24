@@ -1,24 +1,30 @@
 import {
     View,
-    Text,
     Image,
     ScrollView,
     StyleSheet,
     useWindowDimensions,
 } from 'react-native';
-import React, { useState } from 'react';
 import Logo from '../../../assets/images/P8-Logo150.png';
 import CustomInput from '../../components/ui/CustomInput';
 import CustomButton from '../../components/ui/CustomButton/CustomButton';
 import SocialSignInButtons from '../../components/ui/SocialSignInButtons';
 import { useNavigation } from '@react-navigation/native';
+import { useForm } from 'react-hook-form';
 
 const SignInScreen = () => {
-    const [userName, setUserName] = useState('');
-    const [password, setPassword] = useState('');
     const { height } = useWindowDimensions();
     const navigation = useNavigation();
-    const onSignInPressed = () => {
+    const {
+        control,
+        handleSubmit,
+        formState: { errors },
+    } = useForm();
+
+    console.log('Errors', errors);
+
+    const onSignInPressed = (data) => {
+        console.log(data);
         //todo validate user
         navigation.navigate('Home');
     };
@@ -37,17 +43,35 @@ const SignInScreen = () => {
                     resizeMode='stretch'
                 />
                 <CustomInput
+                    name='username'
+                    rules={{
+                        required: 'Username is required',
+                        minLength: {
+                            value: 8,
+                            message: 'Username minimum length is 8',
+                        },
+                    }}
                     placeholder='Username'
-                    value={userName}
-                    setValue={setUserName}
+                    control={control}
                 />
                 <CustomInput
+                    name='password'
+                    rules={{
+                        required: 'Password is required',
+                        minLength: {
+                            value: 3,
+                            message: 'Password length too short',
+                        },
+                    }}
                     placeholder='Password'
-                    value={password}
-                    setValue={setPassword}
+                    control={control}
                     secureTextEntry
                 />
-                <CustomButton text='Sign In' onPress={onSignInPressed} />
+
+                <CustomButton
+                    text='Sign In'
+                    onPress={handleSubmit(onSignInPressed)}
+                />
                 <CustomButton
                     text='Forgot Password'
                     onPress={forgotPasswordPressed}

@@ -3,47 +3,71 @@ import React, { useState } from 'react';
 import CustomInput from '../../components/ui/CustomInput';
 import CustomButton from '../../components/ui/CustomButton/CustomButton';
 import { useNavigation } from '@react-navigation/native';
+import { useForm } from 'react-hook-form';
 const NewPasswordScreen = () => {
-    const [userName, setUserName] = useState('');
-    const [code, setCode] = useState('');
-    const [password, setPassword] = useState('');
-    const [passwordRepeat, setPasswordRepeat] = useState('');
+    const { control, handleSubmit } = useForm();
+
     const navigation = useNavigation();
-    const onBackToSignInPressed = () => {
+
+    const onSubmitPressed = async (data) => {
+        // try {
+        //     await Auth.forgotPasswordSubmit(
+        //         data.username,
+        //         data.code,
+        //         data.password
+        //     );
         navigation.navigate('SignIn');
+        // } catch (e) {
+        //     Alert.alert('Oops', e.message);
+        // }
     };
-    const onSubmitPressed = () => {
-        //todo: send new password to backend
-        navigation.navigate('Home');
+
+    const onSignInPress = () => {
+        navigation.navigate('SignIn');
     };
 
     return (
         <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.root}>
                 <Text style={styles.title}>Reset your password</Text>
+
                 <CustomInput
-                    placeholder='Code'
-                    value={code}
-                    setValue={setCode}
-                />
-                <CustomInput
-                    placeholder='Enter new password'
-                    value={password}
-                    setValue={setPassword}
-                    secureTextEntry
-                />
-                <CustomInput
-                    placeholder='Confirm your new password'
-                    value={passwordRepeat}
-                    setValue={setPasswordRepeat}
-                    secureTextEntry
+                    placeholder='Username'
+                    name='username'
+                    control={control}
+                    rules={{ required: 'Username is required' }}
                 />
 
-                <CustomButton text='Submit' onPress={onSubmitPressed} />
+                <CustomInput
+                    placeholder='Code'
+                    name='code'
+                    control={control}
+                    rules={{ required: 'Code is required' }}
+                />
+
+                <CustomInput
+                    placeholder='Enter your new password'
+                    name='password'
+                    control={control}
+                    secureTextEntry
+                    rules={{
+                        required: 'Password is required',
+                        minLength: {
+                            value: 8,
+                            message:
+                                'Password should be at least 8 characters long',
+                        },
+                    }}
+                />
+
+                <CustomButton
+                    text='Submit'
+                    onPress={handleSubmit(onSubmitPressed)}
+                />
 
                 <CustomButton
                     text='Back to Sign in'
-                    onPress={onBackToSignInPressed}
+                    onPress={onSignInPress}
                     type='TERTIARY'
                 />
             </View>
@@ -51,14 +75,10 @@ const NewPasswordScreen = () => {
     );
 };
 
-export default NewPasswordScreen;
 const styles = StyleSheet.create({
     root: {
-        // flex: 1,
-        flexDirection: 'column',
         alignItems: 'center',
-        marginTop: 80,
-        width: '100%',
+        padding: 20,
     },
     title: {
         fontSize: 24,
@@ -74,3 +94,5 @@ const styles = StyleSheet.create({
         color: '#FDB075',
     },
 });
+
+export default NewPasswordScreen;
