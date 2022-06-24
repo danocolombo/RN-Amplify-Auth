@@ -1,31 +1,38 @@
-import { View, Text, ScrollView, StyleSheet } from 'react-native';
-import React from 'react';
+import { View, Text, ScrollView, StyleSheet, Alert } from 'react-native';
+import React, { useState } from 'react';
 import CustomInput from '../../components/ui/CustomInput';
 import CustomButton from '../../components/ui/CustomButton/CustomButton';
 import SocialSignInButtons from '../../components/ui/SocialSignInButtons';
 import { useNavigation } from '@react-navigation/native';
 import { useForm } from 'react-hook-form';
+import { Auth } from 'aws-amplify';
 const EMAIL_REGEX =
     /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
 const SignUpScreen = () => {
+    const { loading, setLoading } = useState(false);
     const { control, handleSubmit, watch } = useForm();
     const pwd = watch('password');
     const navigation = useNavigation();
 
     const onRegisterPressed = async (data) => {
+        if (loading) {
+            return;
+        }
+        //setLoading(true);
         const { username, password, email, name } = data;
-        // try {
-        //     await Auth.signUp({
-        //         username,
-        //         password,
-        //         attributes: { email, name, preferred_username: username },
-        //     });
-
-        navigation.navigate('ConfirmEmail', { username });
-        // } catch (e) {
-        //     Alert.alert('Oops', e.message);
-        // }
+        try {
+            const response = await Auth.signUp({
+                username,
+                password,
+                attributes: { email, name, preferred_username: username },
+            });
+            console.log('response', response);
+            navigation.navigate('ConfirmEmail', { username });
+        } catch (e) {
+            Alert.alert('Yikes', e.message);
+        }
+        //setLoading(false);
     };
 
     const onSignInPress = () => {
@@ -52,9 +59,9 @@ const SignUpScreen = () => {
                     rules={{
                         required: 'Name is required',
                         minLength: {
-                            value: 3,
+                            value: 6,
                             message:
-                                'Name should be at least 3 characters long',
+                                'Name should be at least 6 characters long',
                         },
                         maxLength: {
                             value: 24,
@@ -70,9 +77,9 @@ const SignUpScreen = () => {
                     rules={{
                         required: 'Username is required',
                         minLength: {
-                            value: 3,
+                            value: 6,
                             message:
-                                'Username should be at least 3 characters long',
+                                'Username should be at least 6 characters long',
                         },
                         maxLength: {
                             value: 24,
@@ -119,7 +126,7 @@ const SignUpScreen = () => {
                 />
 
                 <CustomButton
-                    text='Register'
+                    text={loading ? 'Signing up...' : 'Sign up'}
                     onPress={handleSubmit(onRegisterPressed)}
                 />
 

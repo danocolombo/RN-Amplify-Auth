@@ -4,35 +4,54 @@ import {
     ScrollView,
     StyleSheet,
     useWindowDimensions,
+    Alert,
 } from 'react-native';
+import React, { useState } from 'react';
 import Logo from '../../../assets/images/P8-Logo150.png';
 import CustomInput from '../../components/ui/CustomInput';
 import CustomButton from '../../components/ui/CustomButton/CustomButton';
 import SocialSignInButtons from '../../components/ui/SocialSignInButtons';
 import { useNavigation } from '@react-navigation/native';
 import { useForm } from 'react-hook-form';
+import { Auth } from 'aws-amplify';
+import { SectionList } from 'react-native-web';
 
 const SignInScreen = () => {
+    const [loading, setLoading] = useState(false);
     const { height } = useWindowDimensions();
     const navigation = useNavigation();
     const {
         control,
         handleSubmit,
         formState: { errors },
+        watch,
     } = useForm();
 
     console.log('Errors', errors);
-
-    const onSignInPressed = (data) => {
-        console.log(data);
-        //todo validate user
-        navigation.navigate('Home');
+    // need this to pass the username on to forgot password
+    const user = watch('username');
+    const onSignInPressed = async (data) => {
+        // this loading feature prevents user from sending another request before the first one returns
+        if (loading) {
+            return;
+        }
+        setLoading(true);
+        try {
+            const response = await Auth.signIn(data.username, data.password);
+            console.log(response);
+        } catch (error) {
+            Alert.alert('Yikes', error.message);
+        }
+        setLoading(false);
+        // console.log(data);
+        // //todo validate user
+        // navigation.navigate('Home');
     };
     const onSignUpPressed = () => {
         navigation.navigate('SignUp');
     };
     const forgotPasswordPressed = () => {
-        navigation.navigate('ForgotPassword');
+        navigation.navigate('ForgotPassword', { user });
     };
     return (
         <ScrollView showsVerticalScrollIndicator={false}>
@@ -47,8 +66,8 @@ const SignInScreen = () => {
                     rules={{
                         required: 'Username is required',
                         minLength: {
-                            value: 8,
-                            message: 'Username minimum length is 8',
+                            value: 6,
+                            message: 'Username minimum length is 6',
                         },
                     }}
                     placeholder='Username'
@@ -69,7 +88,7 @@ const SignInScreen = () => {
                 />
 
                 <CustomButton
-                    text='Sign In'
+                    text={loading ? 'Loading...' : 'Sign In'}
                     onPress={handleSubmit(onSignInPressed)}
                 />
                 <CustomButton

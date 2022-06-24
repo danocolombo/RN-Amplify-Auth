@@ -1,0 +1,20 @@
+{
+  "staging": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-patemock-staging-201812-authRole",
+      "UnauthRoleArn": "arn:aws:iam::249235817206:role/amplify-patemock-staging-201812-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::249235817206:role/amplify-patemock-staging-201812-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-patemock-staging-201812-deployment",
+      "UnauthRoleName": "amplify-patemock-staging-201812-unauthRole",
+      "StackName": "amplify-patemock-staging-201812",
+      "StackId": "arn:aws:cloudformation:us-east-1:249235817206:stack/amplify-patemock-staging-201812/c5c15c80-f3fa-11ec-a933-0a1a1bc362bb",
+      "AmplifyAppId": "d33uchkekco8vq"
+    },
+    "categories": {
+      "auth": {
+        "PateMock": {}
+      }
+    }
+  }
+}

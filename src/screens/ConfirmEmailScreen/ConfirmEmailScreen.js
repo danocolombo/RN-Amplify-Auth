@@ -1,27 +1,28 @@
-import { View, Text, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Alert } from 'react-native';
 import React, { useState } from 'react';
 import CustomInput from '../../components/ui/CustomInput';
 import CustomButton from '../../components/ui/CustomButton/CustomButton';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { useForm } from 'react-hook-form';
-
+import { Auth } from 'aws-amplify';
 const ConfirmEmailScreen = () => {
-    //const route = useRoute();
+    const route = useRoute();
     const { control, handleSubmit, watch } = useForm({
         defaultValues: { username: route?.params?.username },
     });
-
+    //used to reference username on resend code.
     const username = watch('username');
 
     const navigation = useNavigation();
 
     const onConfirmPressed = async (data) => {
-        // try {
-        //     await Auth.confirmSignUp(data.username, data.code);
-        navigation.navigate('SignIn');
-        // } catch (e) {
-        //     Alert.alert('Oops', e.message);
-        // }
+        try {
+            const response = await Auth.confirmSignUp(data.username, data.code);
+            console.log('confirmSignUp_reponse', response);
+            navigation.navigate('SignIn');
+        } catch (e) {
+            Alert.alert('Oops', e.message);
+        }
     };
 
     const onSignInPress = () => {
